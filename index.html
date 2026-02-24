@@ -2,163 +2,46 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#667eea">
-  <meta name="description" content="Audit dashboard voor Lightspeed POS reconciliatie">
-  
-  <!-- PWA Meta Tags -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="LS Audit">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23667eea'/%3E%3Cstop offset='100%25' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='80' fill='url(%23g)'/%3E%3Crect x='120' y='280' width='60' height='120' rx='8' fill='white' opacity='0.9'/%3E%3Crect x='210' y='200' width='60' height='200' rx='8' fill='white' opacity='0.95'/%3E%3Crect x='300' y='140' width='60' height='260' rx='8' fill='white'/%3E%3Ctext x='256' y='130' font-family='Arial' font-size='80' font-weight='bold' text-anchor='middle' fill='white'%3E$%3C/text%3E%3Ccircle cx='380' cy='120' r='40' fill='%2310b981'/%3E%3Cpath d='M360 120 L375 135 L400 105' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23667eea'/%3E%3Cstop offset='100%25' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='80' fill='url(%23g)'/%3E%3Crect x='120' y='280' width='60' height='120' rx='8' fill='white' opacity='0.9'/%3E%3Crect x='210' y='200' width='60' height='200' rx='8' fill='white' opacity='0.95'/%3E%3Crect x='300' y='140' width='60' height='260' rx='8' fill='white'/%3E%3Ctext x='256' y='130' font-family='Arial' font-size='80' font-weight='bold' text-anchor='middle' fill='white'%3E$%3C/text%3E%3Ccircle cx='380' cy='120' r='40' fill='%2310b981'/%3E%3Cpath d='M360 120 L375 135 L400 105' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-  
   <title>LS Audit</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
-      height: 100vh;
-      overflow: hidden;
-    }
-    
-    #app-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-    
-    #install-prompt {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #667eea;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
       color: white;
-      padding: 15px 25px;
-      border-radius: 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      z-index: 1000;
-      cursor: pointer;
-      font-weight: 500;
+      text-align: center;
     }
-    
-    #install-prompt.show {
-      display: block;
+    .spinner { 
+      width: 60px; 
+      height: 60px; 
+      border: 5px solid rgba(255,255,255,0.3); 
+      border-top-color: white; 
+      border-radius: 50%; 
+      animation: spin 1s linear infinite; 
+      margin-bottom: 30px; 
     }
-    
-    #loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #667eea;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      z-index: 999;
-      transition: opacity 0.5s;
-    }
-    
-    #loading.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    
-    #loading .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    #loading h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    
-    #loading p {
-      opacity: 0.8;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h1 { font-size: 32px; margin-bottom: 15px; }
+    p { font-size: 16px; opacity: 0.9; }
+    .icon { font-size: 80px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div id="loading">
-    <div class="spinner"></div>
-    <h1>LS Audit</h1>
-    <p>Laden...</p>
-  </div>
-  
-  <!-- Install Prompt -->
-  <div id="install-prompt" onclick="installApp()">
-    📲 Installeer op je telefoon
-  </div>
-  
-  <!-- App iframe -->
-  <iframe id="app-frame" src="https://script.google.com/macros/s/AKfycbzl3ml3xkdR74oviwjD-1yP158qyGLYHVbtvEFqtMI_2j55O_xI_LgiYSf3ZRUNmJyB/exec" allowfullscreen></iframe>
-  
+  <div class="icon">📊</div>
+  <div class="spinner"></div>
+  <h1>LS Audit</h1>
+  <p>Laden...</p>
   <script>
-    // Hide loading when iframe loads
-    document.getElementById('app-frame').onload = function() {
-      setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
-      }, 1000);
-    };
-    
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('Service Worker registered'))
-        .catch(err => console.log('Service Worker registration failed'));
-    }
-    
-    // Install Prompt for Android
-    let deferredPrompt;
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('install-prompt').classList.add('show');
-    });
-    
-    function installApp() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice => {
-          if (choice.outcome === 'accepted') {
-            console.log('App installed');
-          }
-          document.getElementById('install-prompt').classList.remove('show');
-          deferredPrompt = null;
-        });
-      }
-    }
-    
-    // Hide install prompt if already installed
-    window.addEventListener('appinstalled', () => {
-      document.getElementById('install-prompt').classList.remove('show');
-      deferredPrompt = null;
-    });
+    setTimeout(() => {
+      window.location.href = 'https://script.google.com/macros/s/AKfycbzl3ml3xkdR74oviwjD-1yP158qyGLYHVbtvEFqtMI_2j55O_xI_LgiYSf3ZRUNmJyB/exec';
+    }, 1500);
   </script>
 </body>
 </html>
