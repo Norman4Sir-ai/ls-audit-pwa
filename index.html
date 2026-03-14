@@ -27,11 +27,50 @@
       background: #f5f5f5;
       height: 100vh;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    
+
+    #nav-bar {
+      display: flex;
+      align-items: center;
+      background: #10b981;
+      color: white;
+      padding: 0 8px;
+      height: 52px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    #nav-bar .nav-title {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    #nav-bar button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px 10px;
+      font-size: 20px;
+      border-radius: 8px;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    #nav-bar button:active {
+      background: rgba(255,255,255,0.2);
+    }
+
     #app-frame {
       width: 100%;
-      height: 100%;
+      flex: 1;
       border: none;
       display: block;
     }
@@ -114,10 +153,37 @@
     📲 Installeer op je telefoon
   </div>
   
+  <!-- Navigation Bar -->
+  <nav id="nav-bar">
+    <button id="btn-back" onclick="navBack()" title="Vorige pagina" aria-label="Vorige pagina">&#8592;</button>
+    <button id="btn-forward" onclick="navForward()" title="Volgende pagina" aria-label="Volgende pagina">&#8594;</button>
+    <span class="nav-title">LS Audit</span>
+    <button id="btn-home" onclick="navHome()" title="Home" aria-label="Home">&#8962;</button>
+    <button id="btn-refresh" onclick="navRefresh()" title="Vernieuwen" aria-label="Vernieuwen">&#8635;</button>
+  </nav>
+
   <!-- App iframe -->
   <iframe id="app-frame" src="https://script.google.com/macros/s/AKfycbzl3ml3xkdR74oviwjD-1yP158qyGLYHVbtvEFqtMI_2j55O_xI_LgiYSf3ZRUNmJyB/exec" allowfullscreen></iframe>
   
   <script>
+    const APP_URL = 'https://script.google.com/macros/s/AKfycbzl3ml3xkdR74oviwjD-1yP158qyGLYHVbtvEFqtMI_2j55O_xI_LgiYSf3ZRUNmJyB/exec';
+
+    function navBack() {
+      window.history.back();
+    }
+
+    function navForward() {
+      window.history.forward();
+    }
+
+    function navHome() {
+      document.getElementById('app-frame').src = APP_URL;
+    }
+
+    function navRefresh() {
+      document.getElementById('app-frame').src = APP_URL;
+    }
+
     // Hide loading when iframe loads
     document.getElementById('app-frame').onload = function() {
       setTimeout(() => {
