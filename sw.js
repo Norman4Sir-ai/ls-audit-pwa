@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ls-audit-v1';
+const CACHE_NAME = 'ls-audit-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -20,6 +20,15 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache or network
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+
+  // Only cache same-origin requests (PWA shell assets).
+  // Cross-origin requests (e.g. Google Apps Script) are passed directly to
+  // the network so that subscription status is always loaded fresh.
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
