@@ -1,0 +1,40 @@
+# OKX Crypto Trading Bot v1 — Configuration
+# FX is out of scope for v1. See config_fx.yaml (future).
+
+exchange:
+  name: okx
+  demo_mode: true          # Use OKX demo/paper trading (set false for live — NOT recommended in v1)
+  sandbox: true            # ccxt sandbox flag for demo API
+
+market:
+  symbol: "BTC/USDT:USDT"  # USDT-margined perpetual swap (verify on OKX demo via ccxt)
+  timeframe: "4h"          # 4-hour candles
+  candles_limit: 100       # Number of candles to fetch per cycle
+
+strategy:
+  type: "ma_rsi_stub"      # v1 stub: MA-cross trend filter + RSI confirmation
+  ma_fast: 20              # Fast EMA period
+  ma_slow: 50              # Slow EMA period
+  rsi_period: 14           # RSI period
+  rsi_overbought: 70       # RSI level above which long signals are suppressed
+  rsi_oversold: 30         # RSI level below which short signals are suppressed
+  signal_log_mode: true    # Always log what a real strategy would do (even when skipped)
+
+risk:
+  max_risk_per_trade_pct: 1.0    # Max % of current equity risked per trade
+  max_daily_loss_pct: 3.0        # Max % of start-of-day equity allowed to lose; bot pauses after
+  max_leverage: 2                # Maximum leverage (1 = no leverage, 2 = 2x)
+  max_open_positions: 1          # Max simultaneous open positions (v1: always 1)
+  stop_loss_pct: 2.0             # Stop-loss distance from entry as % of entry price
+  take_profit_pct: 4.0           # Take-profit distance from entry as % of entry price (2:1 R:R)
+
+logging:
+  format: "jsonlines"            # "jsonlines" or "sqlite" (v1: jsonlines)
+  file: "logs/bot.jsonl"         # Path to log file
+  level: "INFO"                  # Logging verbosity: DEBUG | INFO | WARNING | ERROR
+
+bot:
+  loop_interval_seconds: 60      # Seconds between main loop iterations
+  dry_run: true                  # true = log orders but never actually send them (extra safety)
+  max_retries: 3                 # Number of retries on transient exchange errors
+  retry_delay_seconds: 5         # Delay between retries
